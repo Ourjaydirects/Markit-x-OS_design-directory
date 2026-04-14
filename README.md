@@ -1,5 +1,7 @@
 # Design Directory
 
+[![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
+
 An interactive 3D design resource directory created by [Open Session](https://opensession.co). Use it as-is to explore 155+ curated design resources, or fork it as a template for any dataset — swap the JSON and make it your own.
 
 <!-- TODO: Add a GIF or screenshot here showing the app in action -->
@@ -544,7 +546,7 @@ Every aspect of this project reflects Open Session's commitment to craft:
 
 ## License
 
-MIT License - feel free to fork and customize for your own use.
+[Apache 2.0](LICENSE)
 
 ---
 
