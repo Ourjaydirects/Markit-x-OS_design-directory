@@ -51,7 +51,7 @@ const EXIT_BG_DURATION = 0.3;
 /**
  * LandingPage
  *
- * The front door of the Design Directory.
+ * The front door of Mark-it.
  * Shows a rotating icon carousel, title, description,
  * and a view toggle to jump into Universe, Card, or Table.
  */
@@ -116,7 +116,7 @@ export function LandingPage({ resources, totalCount, onNavigate, isExiting, onEx
           style={{ fontSize: 'clamp(2rem, 7vw, 5rem)' }}
         >
           <DecryptedText
-            text="Design Directory"
+            text="Mark-it"
             speed={60}
             maxIterations={10}
             sequential
@@ -130,7 +130,7 @@ export function LandingPage({ resources, totalCount, onNavigate, isExiting, onEx
           variants={variants}
           className="text-lg md:text-xl text-brand-vanilla text-center max-w-sm"
         >
-          Discover hand-picked design inspiration & resources by experts.
+          A curated discovery hub for designers to find useful resources, references, tools, and creative assets faster.
         </motion.p>
 
         {/* Label + Toggle grouped with tight spacing */}

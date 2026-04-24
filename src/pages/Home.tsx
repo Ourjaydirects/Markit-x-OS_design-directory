@@ -622,7 +622,7 @@ export default function Home() {
             {/* Left: Label + View Name + Description */}
             <div className="flex flex-col gap-0.5">
               <span className="text-caption font-text uppercase tracking-wider text-os-text-secondary-dark">
-                Design Directory
+                Mark-it
               </span>
               <AnimatePresence mode="wait">
                 <motion.h2

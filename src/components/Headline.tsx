@@ -1,7 +1,7 @@
 /**
  * Headline Component
  *
- * "Design Directory" centered display text.
+ * "Mark-it" centered display text.
  *
  * Design specs from Figma (node-id=540-17001):
  * - Font: Neue Haas Grotesk Display Pro, weight 700 (Bold)
@@ -43,7 +43,7 @@ export default function Headline() {
           textRendering: 'optimizeLegibility',
         }}
       >
-        Design Directory
+        Mark-it
       </h1>
     </div>
   )
