@@ -71,28 +71,28 @@
    DARK MODE
    ============================================ */
 .dark {
-  /* Backgrounds - Charcoal-based */
-  --bg-primary: #141414;
-  --bg-primary_alt: #141414;
-  --bg-secondary: #1C1C1C;
-  --bg-secondary_hover: #252525;
-  --bg-tertiary: #252525;
-  --bg-quaternary: #2e2e2e;
+  /* Backgrounds - frosted light layers over image */
+  --bg-primary: rgba(255, 255, 255, 0.52);
+  --bg-primary_alt: rgba(255, 255, 255, 0.44);
+  --bg-secondary: rgba(255, 255, 255, 0.62);
+  --bg-secondary_hover: rgba(255, 255, 255, 0.72);
+  --bg-tertiary: rgba(255, 255, 255, 0.4);
+  --bg-quaternary: rgba(255, 255, 255, 0.3);
 
-  /* Card vignette - for video overlay gradients */
-  --card-vignette: 28, 28, 28;
+  /* Card vignette - keep content readable without heavy dark blocks */
+  --card-vignette: 255, 255, 255;
 
-  /* Foregrounds - Light neutrals */
-  --fg-primary: #E8E8E8;
-  --fg-secondary: #9CA3AF;
-  --fg-tertiary: #6B7280;
-  --fg-quaternary: #4B5563;
-  --fg-placeholder: #6B7280;
+  /* Foregrounds - dark text for light frosted UI */
+  --fg-primary: rgba(17, 17, 17, 0.9);
+  --fg-secondary: rgba(31, 31, 31, 0.72);
+  --fg-tertiary: rgba(31, 31, 31, 0.55);
+  --fg-quaternary: rgba(31, 31, 31, 0.42);
+  --fg-placeholder: rgba(31, 31, 31, 0.55);
 
   /* Borders */
-  --border-primary: #2C2C2C;
-  --border-secondary: #2C2C2C;
-  --border-tertiary: #1F1F1F;
+  --border-primary: rgba(0, 0, 0, 0.14);
+  --border-secondary: rgba(0, 0, 0, 0.12);
+  --border-tertiary: rgba(0, 0, 0, 0.08);
 
   /* Brand - Functional (brighter for dark backgrounds) */
   --bg-brand-solid_hover: #ff7a38;
@@ -105,21 +105,21 @@
   --color-pricing-paid: #F472B6;
   --color-pricing-default: #9CA3AF;
 
-  /* Shadows (darker for dark mode) */
-  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.3);
-  --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.4);
-  --shadow-lg: 0 10px 15px rgba(0, 0, 0, 0.5);
+  /* Shadows */
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.08);
+  --shadow-md: 0 4px 10px rgba(0, 0, 0, 0.1);
+  --shadow-lg: 0 12px 24px rgba(0, 0, 0, 0.14);
 
   /* Scrollbar */
-  --scrollbar-thumb: #404040;
-  --scrollbar-thumb-hover: #505050;
+  --scrollbar-thumb: rgba(0, 0, 0, 0.28);
+  --scrollbar-thumb-hover: rgba(0, 0, 0, 0.4);
 
   /* Logo/Branding */
-  --logo-fill: #FFFAEE;  /* Vanilla on dark backgrounds */
+  --logo-fill: rgba(17, 17, 17, 0.9);
 
   /* Canvas gradients */
-  --canvas-gradient-top: linear-gradient(to bottom, #141414 0%, rgba(20,20,20,0.8) 40%, transparent 100%);
-  --canvas-gradient-bottom: linear-gradient(to bottom, transparent 0%, rgba(20,20,20,0.8) 60%, #141414 100%);
+  --canvas-gradient-top: linear-gradient(to bottom, rgba(255,255,255,0.6) 0%, rgba(255,255,255,0.35) 40%, transparent 100%);
+  --canvas-gradient-bottom: linear-gradient(to bottom, transparent 0%, rgba(255,255,255,0.35) 60%, rgba(255,255,255,0.6) 100%);
 }
 
 /* ============================================

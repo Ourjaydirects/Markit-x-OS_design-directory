@@ -209,7 +209,7 @@ export default function ResourceDetail() {
   const hasScreenshot = resource.screenshot && !screenshotError;
 
   return (
-    <div className="min-h-screen bg-[var(--bg-primary)] text-[var(--fg-primary)]">
+    <div className="min-h-screen bg-transparent text-[var(--fg-primary)]">
       {/* Skip to main content - accessibility */}
       <a
         href="#main-content"
@@ -219,7 +219,7 @@ export default function ResourceDetail() {
       </a>
 
       {/* Header - Consistent with Home */}
-      <header className="sticky top-0 z-10 bg-[var(--bg-primary)] border-b border-[var(--border-secondary)]">
+      <header className="sticky top-0 z-10 bg-[var(--bg-primary)] backdrop-blur-xl border-b border-[var(--border-secondary)] shadow-sm">
         <div className="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
           {/* Left: Mark-it brand */}
           <Link
@@ -262,7 +262,7 @@ export default function ResourceDetail() {
       </header>
 
       {/* Subheader - Visible on all viewports */}
-      <section className="border-b border-[var(--border-secondary)] bg-[var(--bg-primary)]">
+      <section className="border-b border-[var(--border-secondary)] bg-[var(--bg-primary)] backdrop-blur-xl">
         <div className="max-w-7xl mx-auto px-6 py-3 md:py-4">
           <div className="flex items-center justify-between">
             {/* Left: Breadcrumbs */}
@@ -332,7 +332,7 @@ export default function ResourceDetail() {
               transition={{ delay: 0.05 }}
               className="mb-8"
             >
-              <div className="relative bg-[#191919] rounded-xl p-6 flex items-center justify-center">
+              <div className="relative bg-[var(--bg-primary)] rounded-xl p-6 flex items-center justify-center backdrop-blur-xl border border-[var(--border-secondary)]">
                 {/* Browser Mockup - centered with adaptive aspect ratio */}
                 <div className="rounded-lg overflow-hidden border border-[var(--border-secondary)]/50 max-w-2xl w-full shadow-2xl max-h-[70vh]">
                   {/* Browser chrome with traffic lights */}

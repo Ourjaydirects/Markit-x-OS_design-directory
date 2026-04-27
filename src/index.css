@@ -16,11 +16,28 @@ body {
   font-family: 'DM Sans', ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  background-image: url('/backgrounds/markit-bg.jpg');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
   background-color: var(--bg-primary);
   color: var(--fg-primary);
 }
 
+/* Subtle readability overlay over the global background image */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background: rgba(20, 20, 20, 0.1);
+  pointer-events: none;
+  z-index: 0;
+}
+
 #root {
+  position: relative;
+  z-index: 1;
   width: 100vw;
   min-height: 100vh;  /* Fallback for older browsers */
   min-height: 100dvh; /* Dynamic viewport for mobile - adjusts to actual visible area */

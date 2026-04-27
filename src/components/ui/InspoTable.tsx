@@ -241,7 +241,7 @@ export function InspoTable({
       {/* Sticky filter container - filter banner + filter bar */}
       <div
         ref={filterContainerRef}
-        className="sticky top-0 z-20 bg-[var(--bg-primary)]"
+        className="sticky top-0 z-20 bg-[var(--bg-primary)] backdrop-blur-xl"
       >
         {/* Filter Active Banner - shows when navigating from ResourceDetail */}
         {showFilterBanner && (
@@ -268,7 +268,7 @@ export function InspoTable({
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ duration: 0.3, delay: 0.05, ease: smoothEase }}
-          className="bg-[var(--bg-primary)] border-b border-[var(--border-secondary)]"
+          className="bg-[var(--bg-primary)] backdrop-blur-xl border-b border-[var(--border-secondary)]"
         >
         <div className="p-4 md:p-6 space-y-4">
           {/* Desktop: Flex row with filters right-aligned */}
@@ -430,7 +430,7 @@ export function InspoTable({
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ duration: 0.3, delay: 0.1, ease: smoothEase }}
-            className="sticky z-10 bg-[var(--bg-primary)] shadow-[0_1px_0_0_var(--border-secondary)]"
+            className="sticky z-10 bg-[var(--bg-primary)] backdrop-blur-xl shadow-[0_1px_0_0_var(--border-secondary)]"
             style={{ top: filterBarHeight }}
           >
             <tr className="border-b border-[var(--border-secondary)]">
@@ -516,7 +516,7 @@ export function InspoTable({
                   animate="visible"
                   variants={rowVariants}
                   onClick={() => navigate(`/resource/${resource.id}`)}
-                  className="border-b border-[var(--border-secondary)] hover:bg-[var(--bg-secondary)]/30 transition-colors group cursor-pointer"
+                  className="border-b border-[var(--border-secondary)] bg-[var(--bg-primary_alt)] hover:bg-[var(--bg-secondary)] transition-colors group cursor-pointer"
                 >
                   {/* Thumbnail Column */}
                   <td className="p-4">

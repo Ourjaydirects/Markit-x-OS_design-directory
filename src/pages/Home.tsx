@@ -431,7 +431,7 @@ export default function Home() {
   };
 
   return (
-    <div className={`h-dvh text-os-text-primary-dark font-sans overflow-hidden ${displayMode === '3d' ? '' : 'bg-os-bg-dark'}`}>
+    <div className="h-dvh text-os-text-primary-dark font-sans overflow-hidden">
       {/* Skip to main content - accessibility */}
       <a
         href="#main-content"
@@ -506,7 +506,7 @@ export default function Home() {
       {/* UI Overlay Container */}
       <div className={`relative z-[258] h-full flex flex-col overflow-hidden ${displayMode === '3d' ? 'pointer-events-none' : ''}`}>
         {/* Header - Semi-transparent with backdrop blur */}
-        <header className={`pointer-events-auto flex-shrink-0 sticky top-0 z-[260] backdrop-blur-xl border-b border-[var(--border-secondary)] h-16 ${displayMode === '3d' ? 'bg-os-bg-dark/60' : 'bg-os-bg-dark/80'}`}>
+        <header className={`pointer-events-auto flex-shrink-0 sticky top-0 z-[260] backdrop-blur-xl border-b border-[var(--border-secondary)] shadow-sm h-16 ${displayMode === '3d' ? 'bg-[var(--bg-primary)]' : 'bg-[var(--bg-primary)]'}`}>
         <div className="max-w-7xl mx-auto px-6 h-full">
           <div className="flex items-center justify-between h-full">
           <div className="flex items-center gap-3 min-w-0">
@@ -583,7 +583,7 @@ export default function Home() {
           opacity: { duration: DURATION.normal, delay: 0.05 },
         }}
         style={{ overflow: 'hidden' }}
-        className={`pointer-events-auto flex-shrink-0 relative z-[260] border-b border-[var(--border-secondary)] ${displayMode === '3d' ? 'bg-os-bg-dark/60 backdrop-blur-xl' : 'bg-os-bg-dark'}`}
+        className={`pointer-events-auto flex-shrink-0 relative z-[260] border-b border-[var(--border-secondary)] ${displayMode === '3d' ? 'bg-[var(--bg-primary)] backdrop-blur-xl' : 'bg-[var(--bg-primary)] backdrop-blur-xl'}`}
         role="region"
         aria-label="Current view"
       >
@@ -612,7 +612,7 @@ export default function Home() {
             </div>
 
             {/* Right: View toggle (all screen sizes) */}
-            <div className="flex items-center bg-os-surface-dark/50 rounded-lg p-1 border border-[var(--border-secondary)]">
+            <div className="flex items-center bg-[var(--bg-secondary)] rounded-lg p-1 border border-[var(--border-secondary)] backdrop-blur-xl">
               <button
                 onClick={() => setSearchParams({ display: '3d' })}
                 className={`p-2 rounded-md transition-all ${
@@ -750,7 +750,7 @@ export default function Home() {
           >
             {/* Solid background - instant exit to prevent rectangle artifact */}
             <motion.div
-              className="absolute inset-0 bg-os-bg-dark pointer-events-none"
+              className="absolute inset-0 bg-[var(--bg-primary)] pointer-events-none"
               initial={{ opacity: 1 }}
               exit={{ opacity: 0 }}
               transition={{ duration: 0 }}
@@ -861,7 +861,7 @@ export default function Home() {
                 whileTap={prefersReducedMotion ? {} : { scale: 0.95 }}
                 transition={TRANSITION.springSnappy}
                 aria-label={legendOpen ? "Close legend" : "Open legend"}
-                className="p-2.5 bg-os-bg-dark backdrop-blur-xl rounded-lg border border-[var(--border-secondary)] text-os-text-secondary-dark hover:text-brand-aperol hover:border-brand-aperol/30 transition-all shadow-lg"
+                className="p-2.5 bg-[var(--bg-primary)] backdrop-blur-xl rounded-lg border border-[var(--border-secondary)] text-os-text-secondary-dark hover:text-brand-aperol hover:border-brand-aperol/30 transition-all shadow-lg"
               >
                 {legendOpen ? <X className="w-5 h-5" /> : <Info className="w-5 h-5" />}
               </motion.button>
@@ -875,7 +875,7 @@ export default function Home() {
         {legendOpen && (
           <motion.div
             key="legend-backdrop"
-            className="fixed inset-x-0 bottom-0 z-[259] bg-os-bg-dark/60 backdrop-blur-md"
+            className="fixed inset-x-0 bottom-0 z-[259] bg-[var(--bg-primary)] backdrop-blur-md"
             style={{ top: 137 }}
             initial={PAGE_TRANSITION.backdrop.initial}
             animate={PAGE_TRANSITION.backdrop.animate}
