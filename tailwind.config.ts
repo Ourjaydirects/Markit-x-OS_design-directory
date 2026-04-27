@@ -33,12 +33,12 @@ export default {
         },
       },
       fontFamily: {
-        sans: ['"Neue Haas Grotesk Display Pro"', 'system-ui', 'sans-serif'],
-        display: ['"Neue Haas Grotesk Display Pro"', 'system-ui', 'sans-serif'],
-        text: ['"Neue Haas Grotesk Display Pro"', 'system-ui', 'sans-serif'],
+        sans: ['"DM Sans"', 'ui-sans-serif', 'system-ui', '-apple-system', '"Segoe UI"', 'sans-serif'],
+        display: ['"DM Sans"', 'ui-sans-serif', 'system-ui', '-apple-system', '"Segoe UI"', 'sans-serif'],
+        text: ['"DM Sans"', 'ui-sans-serif', 'system-ui', '-apple-system', '"Segoe UI"', 'sans-serif'],
         serif: ['Georgia', 'Cambria', '"Times New Roman"', 'Times', 'serif'],
-        mono: ['Offbit', 'ui-monospace', 'monospace'],
-        accent: ['Offbit', 'ui-monospace', 'monospace'],
+        mono: ['ui-monospace', 'SFMono-Regular', 'Menlo', 'Monaco', 'Consolas', '"Liberation Mono"', '"Courier New"', 'monospace'],
+        accent: ['"DM Sans"', 'ui-sans-serif', 'system-ui', '-apple-system', '"Segoe UI"', 'sans-serif'],
       },
       borderRadius: {
         'brand': '12px',

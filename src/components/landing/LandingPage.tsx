@@ -112,7 +112,7 @@ export function LandingPage({ resources, totalCount, onNavigate, isExiting, onEx
         {/* Title */}
         <motion.h1
           variants={variants}
-          className="font-accent font-bold text-brand-aperol uppercase text-center leading-none"
+          className="font-notable text-brand-aperol uppercase text-center leading-none"
           style={{ fontSize: 'clamp(2rem, 7vw, 5rem)' }}
         >
           <DecryptedText
