@@ -3649,5 +3649,29 @@
     "gravityScore": 7.2,
     "gravityRationale": "3D animation and automated rigging tools",
     "id": 155
+  },
+  {
+    "id": 156,
+    "name": "Morflax",
+    "url": "https://studio.morflax.com/",
+    "description": "Make 3D visuals that stand out. Mockups, icons, shapes, and more. Remix in just a few clicks. All in one place.",
+    "category": "Tools",
+    "subCategory": "3D",
+    "pricing": "Free",
+    "featured": false,
+    "opensource": false,
+    "tags": [
+      "tools",
+      "3d",
+      "experimental",
+      "free"
+    ],
+    "count": null,
+    "tier": 3,
+    "screenshot": "/assets/screenshots/morflax.png",
+    "thumbnail": "/assets/screenshots/morflax.png",
+    "gravityScore": 8.5,
+    "gravityRationale": "3D design and mockup generation tool for quick creative prototyping",
+    "logoBg": "#FFFFFF"
   }
 ]
