@@ -34,6 +34,8 @@ export interface NormalizedResource {
   gravityScore: number;
   /** Brief explanation for the score (50 chars max) */
   gravityRationale?: string;
+  /** ISO date string for when the resource was added (optional) */
+  dateAdded?: string | null;
 }
 
 /**

@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { ChevronUp, ChevronDown, ChevronsUpDown, ExternalLink, Search, X } from 'lucide-react';
 import type { NormalizedResource } from '../../types/resource';
+import { getResourceDateAdded, isNewResource } from '../../lib/is-new-resource';
 import { MobileResourceCard } from './MobileResourceCard';
 import { GravityScoreBadge } from './GravityScoreBadge';
 import { ResourceLogo } from './ResourceLogo';
@@ -33,6 +34,14 @@ const RATING_RANGES = [
   { value: '6-7', label: '6-7', min: 6.0, max: 6.99 },
   { value: 'below-6', label: 'Below 6', min: 0, max: 5.99 },
 ] as const;
+
+function NewResourceBadge() {
+  return (
+    <span className="inline-flex shrink-0 items-center rounded-full bg-[#00ff88] px-1.5 py-0.5 text-[10px] font-bold uppercase leading-none text-black">
+      NEW
+    </span>
+  );
+}
 
 interface InspoTableProps {
   resources: NormalizedResource[];
@@ -65,6 +74,7 @@ export function InspoTable({
   const [subCategoryFilter, setSubCategoryFilter] = useState<string>(initialSubCategory || 'all');
   const [pricingFilter, setPricingFilter] = useState<string>(initialPricing || 'all');
   const [ratingFilter, setRatingFilter] = useState<string>('all');
+  const [newFilter, setNewFilter] = useState<string>('all');
   const [tierFilter, _setTierFilter] = useState<string>(initialTier || 'all');
   const [featuredFilter, _setFeaturedFilter] = useState<string>(initialFeatured || 'all');
   const [opensourceFilter, _setOpensourceFilter] = useState<string>(initialOpensource || 'all');
@@ -80,11 +90,12 @@ export function InspoTable({
     if (subCategoryFilter !== 'all') labels.push(subCategoryFilter);
     if (pricingFilter !== 'all') labels.push(pricingFilter);
     if (ratingFilter !== 'all') labels.push(`Rating ${ratingFilter}`);
+    if (newFilter === 'new') labels.push('New (Last 7 Days)');
     if (tierFilter !== 'all') labels.push(`Tier ${tierFilter}`);
     if (featuredFilter === 'true') labels.push('Featured');
     if (opensourceFilter === 'true') labels.push('Open Source');
     return labels.join(', ');
-  }, [categoryFilter, subCategoryFilter, pricingFilter, ratingFilter, tierFilter, featuredFilter, opensourceFilter]);
+  }, [categoryFilter, subCategoryFilter, pricingFilter, ratingFilter, newFilter, tierFilter, featuredFilter, opensourceFilter]);
 
   const hasActiveFilters = activeFilterLabel.length > 0;
   const showFilterBanner = isFromUrl && hasActiveFilters && !userHasModifiedFilters;
@@ -95,6 +106,7 @@ export function InspoTable({
     setSubCategoryFilter('all');
     setPricingFilter('all');
     setRatingFilter('all');
+    setNewFilter('all');
     setUserHasModifiedFilters(true);
   };
 
@@ -116,6 +128,11 @@ export function InspoTable({
 
   const handleRatingChange = (value: string) => {
     setRatingFilter(value);
+    setUserHasModifiedFilters(true);
+  };
+
+  const handleNewFilterChange = (value: string) => {
+    setNewFilter(value);
     setUserHasModifiedFilters(true);
   };
 
@@ -171,13 +188,16 @@ export function InspoTable({
       const ratingMatch = !ratingRange || ratingFilter === 'all' || 
         (resource.gravityScore >= ratingRange.min && resource.gravityScore <= ratingRange.max);
 
+      const addedDate = getResourceDateAdded(resource);
+      const newMatch = newFilter === 'all' || (newFilter === 'new' && isNewResource(addedDate ?? ''));
+
       // Search filter
       const searchMatch = !searchQuery ||
         resource.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
         resource.description?.toLowerCase().includes(searchQuery.toLowerCase()) ||
         resource.tags?.some(tag => tag.toLowerCase().includes(searchQuery.toLowerCase()));
 
-      return categoryMatch && subCategoryMatch && pricingMatch && tierMatch && featuredMatch && opensourceMatch && searchMatch && ratingMatch;
+      return categoryMatch && subCategoryMatch && pricingMatch && tierMatch && featuredMatch && opensourceMatch && searchMatch && ratingMatch && newMatch;
     });
 
     // Apply sorting
@@ -202,7 +222,7 @@ export function InspoTable({
     }
 
     return filtered;
-  }, [resources, categoryFilter, subCategoryFilter, pricingFilter, ratingFilter, tierFilter, featuredFilter, opensourceFilter, searchQuery, sortField, sortDirection]);
+  }, [resources, categoryFilter, subCategoryFilter, pricingFilter, ratingFilter, newFilter, tierFilter, featuredFilter, opensourceFilter, searchQuery, sortField, sortDirection]);
 
   // Handle sort toggle
   const handleSort = (field: SortField) => {
@@ -300,8 +320,8 @@ export function InspoTable({
               </div>
             </div>
 
-            {/* Filter Dropdowns - 4 columns on mobile, flex row on desktop */}
-            <div className="grid grid-cols-4 md:flex gap-3 md:gap-4">
+            {/* Filter Dropdowns - 5 columns on mobile, flex row on desktop */}
+            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 md:flex gap-3 md:gap-4">
               {/* Category Filter */}
               <div className="flex flex-col">
                 <label htmlFor="category-filter" className="block text-xs font-accent uppercase tracking-wider text-[var(--fg-secondary)] mb-2">
@@ -378,6 +398,22 @@ export function InspoTable({
                       {range.label}
                     </option>
                   ))}
+                </select>
+              </div>
+
+              {/* New Filter */}
+              <div className="flex flex-col">
+                <label htmlFor="new-filter" className="block text-xs font-accent uppercase tracking-wider text-[var(--fg-secondary)] mb-2">
+                  Added
+                </label>
+                <select
+                  id="new-filter"
+                  value={newFilter}
+                  onChange={(e) => handleNewFilterChange(e.target.value)}
+                  className="px-2 sm:px-3 py-2 bg-[var(--bg-secondary)] border border-[var(--border-secondary)] rounded-lg text-xs sm:text-sm text-[var(--fg-primary)] focus:outline-none focus:ring-1 focus:ring-[var(--border-primary)]/60 focus:border-[var(--border-primary)] transition-colors cursor-pointer hover:border-[var(--fg-tertiary)] truncate"
+                >
+                  <option value="all">All</option>
+                  <option value="new">New (Last 7 Days)</option>
                 </select>
               </div>
             </div>
@@ -525,8 +561,9 @@ export function InspoTable({
 
                   {/* Name Column - Links to detail page */}
                   <td className="p-4">
-                    <span className="font-medium text-[var(--fg-primary)] group-hover:text-brand-aperol transition-colors">
+                    <span className="inline-flex items-center gap-2 font-medium text-[var(--fg-primary)] group-hover:text-brand-aperol transition-colors">
                       {resource.name}
+                      {isNewResource(getResourceDateAdded(resource) ?? '') && <NewResourceBadge />}
                     </span>
                   </td>
 
