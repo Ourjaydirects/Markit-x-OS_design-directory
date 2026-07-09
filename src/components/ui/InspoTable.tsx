@@ -35,9 +35,11 @@ const RATING_RANGES = [
   { value: 'below-6', label: 'Below 6', min: 0, max: 5.99 },
 ] as const;
 
-function NewResourceBadge() {
+function NewResourceBadge({ isNew }: { isNew: boolean }) {
+  if (!isNew) return null;
+
   return (
-    <span className="inline-flex shrink-0 items-center rounded-full bg-[#00ff88] px-1.5 py-0.5 text-[10px] font-bold uppercase leading-none text-black">
+    <span className="inline-flex items-center rounded-full bg-[#00ff88] px-1.5 py-0.5 text-[10px] font-bold uppercase text-black">
       NEW
     </span>
   );
@@ -563,7 +565,9 @@ export function InspoTable({
                   <td className="p-4">
                     <span className="inline-flex items-center gap-2 font-medium text-[var(--fg-primary)] group-hover:text-brand-aperol transition-colors">
                       {resource.name}
-                      isNewResource(resource.dateAdded ?? '') && <NewResourceBadge />
+                      isNewResource(resource.dateAdded ?? '') && <NewResourceBadge
+  isNew={isNewResource(resource.dateAdded ?? '')}
+/>
                     </span>
                   </td>
 
