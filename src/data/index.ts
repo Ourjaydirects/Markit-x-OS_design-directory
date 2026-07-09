@@ -3,5 +3,8 @@ import type { NormalizedResource } from '../types/resource';
 import { dedupeResources } from '../lib/dedupe-resources';
 
 export const resources: NormalizedResource[] = dedupeResources(
-  resourcesData as NormalizedResource[],
+  resourcesData.map((r) => ({
+    ...r,
+    dateAdded: r.dateAdded ?? null,
+  })) as NormalizedResource[],
 );

@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { ChevronUp, ChevronDown, ChevronsUpDown, ExternalLink, Search, X } from 'lucide-react';
 import type { NormalizedResource } from '../../types/resource';
-import { getResourceDateAdded, isNewResource } from '../../lib/is-new-resource';
+import { isNewResource } from '../../lib/is-new-resource';
 import { MobileResourceCard } from './MobileResourceCard';
 import { GravityScoreBadge } from './GravityScoreBadge';
 import { ResourceLogo } from './ResourceLogo';
@@ -188,7 +188,7 @@ export function InspoTable({
       const ratingMatch = !ratingRange || ratingFilter === 'all' || 
         (resource.gravityScore >= ratingRange.min && resource.gravityScore <= ratingRange.max);
 
-      const addedDate = getResourceDateAdded(resource);
+        const addedDate = resource.dateAdded ?? null;
       const newMatch = newFilter === 'all' || (newFilter === 'new' && isNewResource(addedDate ?? ''));
 
       // Search filter
@@ -563,7 +563,7 @@ export function InspoTable({
                   <td className="p-4">
                     <span className="inline-flex items-center gap-2 font-medium text-[var(--fg-primary)] group-hover:text-brand-aperol transition-colors">
                       {resource.name}
-                      {isNewResource(getResourceDateAdded(resource) ?? '') && <NewResourceBadge />}
+                      isNewResource(resource.dateAdded ?? '') && <NewResourceBadge />
                     </span>
                   </td>
 
