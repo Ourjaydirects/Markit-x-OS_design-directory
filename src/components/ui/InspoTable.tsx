@@ -563,12 +563,12 @@ export function InspoTable({
 
                   {/* Name Column - Links to detail page */}
                   <td className="p-4">
-                    <span className="inline-flex items-center gap-2 font-medium text-[var(--fg-primary)] group-hover:text-brand-aperol transition-colors">
-                      {resource.name}
-                      isNewResource(resource.dateAdded ?? '') && <NewResourceBadge
-  isNew={isNewResource(resource.dateAdded ?? '')}
-/>
-                    </span>
+                  <span className="inline-flex items-center gap-2 font-medium text-[var(--fg-primary)] group-hover:text-brand-aperol transition-colors">
+  {resource.name}
+  {isNewResource(resource.dateAdded ?? '') && (
+    <NewResourceBadge isNew={true} />
+  )}
+</span>
                   </td>
 
                   {/* Category Column */}
