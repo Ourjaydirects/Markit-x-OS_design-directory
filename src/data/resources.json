@@ -6746,6 +6746,26 @@
     "gravityRationale": "Professional-grade VFX library with thousands of production-ready elements",
     "logoBg": "dark",
     "dateAdded": "2026-07-08"
+  },
+  {
+    "id": 308,
+    "name": "Symbl Space",
+    "url": "https://www.symbl.space/",
+    "description": "Free web tool to test your logo, SVG icons, HTML symbols, emojis, app icons, and design utilities for designers and developers.",
+    "category": "Experimental Tools",
+    "subCategory": "Graphic Design",
+    "pricing": "Free",
+    "featured": true,
+    "opensource": false,
+    "tags": ["icons", "svg", "test", "symbols", "Logo"],
+    "count": null,
+    "tier": 1,
+    "thumbnail": null,
+    "screenshot": null,
+    "gravityScore": 8.8,
+    "gravityRationale": "Useful niche tool for logo feasibility testing",
+    "logoBg": "light",
+    "dateAdded": "2026-07-07"
   }
 
   
