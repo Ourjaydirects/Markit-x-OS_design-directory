@@ -76,7 +76,7 @@ export function LandingPage({ resources, totalCount, onNavigate, isExiting, onEx
         >
           <div className="absolute inset-0 animate-in fade-in duration-[2000ms]">
             <PrismaticBurst
-              colors={['#FE5102', '#FFFAEE', '#191919']}
+              colors={['#FF0000', '#FFFAEE', '#191919']}
               animationType="rotate3d"
               intensity={1.5}
               speed={0.25}

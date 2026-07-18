@@ -271,9 +271,9 @@ export function InspoTable({
             initial={{ opacity: 0, y: -10 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.3, ease: smoothEase }}
-            className="flex items-center justify-between px-4 py-2 bg-[#FE5102]/10 border-b border-[var(--border-secondary)]"
+            className="flex items-center justify-between px-4 py-2 bg-[#FF0000]/10 border-b border-[var(--border-secondary)]"
           >
-            <span className="text-sm text-[#FE5102] font-medium">
+            <span className="text-sm text-[#FF0000] font-medium">
               Showing results for: {activeFilterLabel}
             </span>
             <button

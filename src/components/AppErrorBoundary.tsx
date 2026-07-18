@@ -51,7 +51,7 @@ export class AppErrorBoundary extends Component<Props, State> {
         <div className="min-h-screen flex items-center justify-center bg-[var(--bg-primary)] text-[var(--fg-primary)]">
           <div className="text-center max-w-md px-6">
             <div className="w-16 h-16 mx-auto mb-6 rounded-2xl bg-[var(--bg-secondary)] border border-[var(--border-secondary)] flex items-center justify-center">
-              <AlertTriangle className="w-8 h-8 text-amber-500" />
+              <AlertTriangle className="w-8 h-8 text-[#FF0000]" />
             </div>
 
             <h1 className="text-xl font-medium text-[var(--fg-primary)] mb-2">

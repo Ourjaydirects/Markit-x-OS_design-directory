@@ -33,9 +33,9 @@ function getBadgeColors(tier: ScoreTier): {
       };
     case 'excellent':
       return {
-        bg: 'bg-amber-500/10',
-        text: 'text-amber-500',
-        border: 'border-amber-500/20',
+        bg: 'bg-[#FF0000]/10',
+        text: 'text-[#FF0000]',
+        border: 'border-[#FF0000]/20',
       };
     case 'good':
       return {

@@ -83,7 +83,7 @@ function getPricingStyle(pricing: string | null) {
 
   const lower = pricing.toLowerCase();
   if (lower === 'free') return { bg: 'bg-emerald-500/10', text: 'text-emerald-400', border: 'border-emerald-500/30' };
-  if (lower === 'freemium') return { bg: 'bg-amber-500/10', text: 'text-amber-400', border: 'border-amber-500/30' };
+  if (lower === 'freemium') return { bg: 'bg-[#FF0000]/10', text: 'text-[#FF0000]', border: 'border-[#FF0000]/30' };
   if (lower === 'paid' || lower === 'pay per use') return { bg: 'bg-rose-500/10', text: 'text-rose-400', border: 'border-rose-500/30' };
   return { bg: 'bg-[var(--bg-secondary)]', text: 'text-[var(--fg-secondary)]', border: 'border-[var(--border-secondary)]' };
 }
@@ -194,7 +194,7 @@ export default function ResourceDetail() {
           <p className="text-[var(--fg-tertiary)] mb-6">The resource you're looking for doesn't exist.</p>
           <Link
             to="/"
-            className="inline-flex items-center gap-2 px-4 py-2 bg-[#FE5102] text-white rounded-lg hover:bg-[#FE5102]/90 transition-colors"
+            className="inline-flex items-center gap-2 px-4 py-2 bg-[#FF0000] text-white rounded-lg hover:bg-[#FF0000]/90 transition-colors"
           >
             <ArrowLeft className="w-4 h-4" />
             Back to Universe
@@ -400,11 +400,11 @@ export default function ResourceDetail() {
                       rel="noopener noreferrer"
                       className="group flex items-center gap-2"
                     >
-                      <h1 className="text-2xl md:text-3xl font-bold tracking-tight group-hover:text-[#FE5102] transition-colors">
+                      <h1 className="text-2xl md:text-3xl font-bold tracking-tight group-hover:text-[#FF0000] transition-colors">
                         {resource.name}
                       </h1>
                       <motion.span
-                        className="text-[var(--fg-tertiary)] group-hover:text-[#FE5102] transition-colors"
+                        className="text-[var(--fg-tertiary)] group-hover:text-[#FF0000] transition-colors"
                         whileHover={{ x: 2, y: -2 }}
                       >
                         <ArrowUpRight className="w-5 h-5 opacity-0 group-hover:opacity-100 transition-opacity" />
@@ -416,7 +416,7 @@ export default function ResourceDetail() {
                       href={resource.url}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="group flex items-center gap-1.5 text-[var(--fg-secondary)] hover:text-[#FE5102] transition-colors mt-1"
+                      className="group flex items-center gap-1.5 text-[var(--fg-secondary)] hover:text-[#FF0000] transition-colors mt-1"
                     >
                       <Globe className="w-3.5 h-3.5" />
                       <span className="text-sm truncate">{domain}</span>
@@ -452,7 +452,7 @@ export default function ResourceDetail() {
                       target="_blank"
                       rel="noopener noreferrer"
                       aria-label="Visit website"
-                      className="inline-flex items-center justify-center gap-2 rounded-lg transition-colors bg-[#FE5102] text-white hover:bg-[#FE5102]/90 w-10 h-10 sm:w-auto sm:px-3 sm:py-2 lg:px-4 lg:py-2 text-xs sm:text-sm font-medium"
+                      className="inline-flex items-center justify-center gap-2 rounded-lg transition-colors bg-[#FF0000] text-white hover:bg-[#FF0000]/90 w-10 h-10 sm:w-auto sm:px-3 sm:py-2 lg:px-4 lg:py-2 text-xs sm:text-sm font-medium"
                     >
                       <ArrowUpRight className="w-4 h-4 sm:w-3.5 sm:h-3.5 lg:w-4 lg:h-4" />
                       <span className="hidden sm:inline">Website</span>
@@ -520,7 +520,7 @@ export default function ResourceDetail() {
                 {resource.description && (
                   <div>
                     <h2 className="text-xs font-semibold text-[var(--fg-primary)] mb-3 uppercase tracking-wide flex items-center gap-2">
-                      <span className="w-6 h-px bg-[#FE5102]" />
+                      <span className="w-6 h-px bg-[#FF0000]" />
                       About
                     </h2>
                     {(() => {
@@ -548,7 +548,7 @@ export default function ResourceDetail() {
                 {resource.gravityScore && (
                   <div>
                     <h2 className="text-xs font-semibold text-[var(--fg-primary)] mb-3 uppercase tracking-wide flex items-center gap-2">
-                      <span className="w-6 h-px bg-[#FE5102]" />
+                      <span className="w-6 h-px bg-[#FF0000]" />
                       Rating
                     </h2>
                     <RatingScale
@@ -563,15 +563,15 @@ export default function ResourceDetail() {
                 {/* Details Section */}
                 <div>
                   <h2 className="text-xs font-semibold text-[var(--fg-primary)] mb-3 uppercase tracking-wide flex items-center gap-2">
-                    <span className="w-6 h-px bg-[#FE5102]" />
+                    <span className="w-6 h-px bg-[#FF0000]" />
                     Details
                   </h2>
                   <div className="flex flex-wrap gap-1.5">
-                    {/* Category - Aperol colored */}
+                    {/* Category accent */}
                     {resource.category && (
                       <Link
                         to={`/?display=table&category=${encodeURIComponent(resource.category)}`}
-                        className="inline-flex items-center gap-1 px-2 py-0.5 rounded bg-[#FE5102]/10 text-[#FE5102] text-xs border border-[var(--border-secondary)] hover:bg-[#FE5102]/20 transition-colors"
+                        className="inline-flex items-center gap-1 px-2 py-0.5 rounded bg-[#FF0000]/10 text-[#FF0000] text-xs border border-[var(--border-secondary)] hover:bg-[#FF0000]/20 transition-colors"
                       >
                         <Folder className="w-2.5 h-2.5" />
                         {resource.category}
@@ -611,11 +611,11 @@ export default function ResourceDetail() {
                       </Link>
                     )}
 
-                    {/* Featured - Amber */}
+                    {/* Featured */}
                     {resource.featured && (
                       <Link
                         to="/?display=table&featured=true"
-                        className="inline-flex items-center gap-1 px-2 py-0.5 rounded bg-amber-500/10 text-amber-400 text-xs border border-amber-500/20 hover:bg-amber-500/20 transition-colors"
+                        className="inline-flex items-center gap-1 px-2 py-0.5 rounded bg-[#FF0000]/10 text-[#FF0000] text-xs border border-[#FF0000]/20 hover:bg-[#FF0000]/20 transition-colors"
                       >
                         <Star className="w-2.5 h-2.5 fill-current" />
                         Featured
@@ -647,7 +647,7 @@ export default function ResourceDetail() {
               className="mb-8 pt-6 border-t border-[var(--border-secondary)]"
             >
               <h2 className="text-xs font-semibold text-[var(--fg-primary)] mb-3 uppercase tracking-wide flex items-center gap-2">
-                <span className="w-6 h-px bg-[#FE5102]" />
+                <span className="w-6 h-px bg-[#FF0000]" />
                 Related Resources
               </h2>
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
@@ -660,7 +660,7 @@ export default function ResourceDetail() {
                       <ResourceLogo resource={related} size="md" />
 
                       <div className="flex-1 min-w-0">
-                        <h3 className="text-sm font-medium text-[var(--fg-primary)] group-hover:text-[#FE5102] transition-colors truncate">
+                        <h3 className="text-sm font-medium text-[var(--fg-primary)] group-hover:text-[#FF0000] transition-colors truncate">
                           {related.name}
                         </h3>
                         <p className="text-xs text-[var(--fg-tertiary)] truncate">
@@ -668,7 +668,7 @@ export default function ResourceDetail() {
                         </p>
                       </div>
 
-                      <ExternalLink className="w-3.5 h-3.5 text-[var(--fg-tertiary)] group-hover:text-[#FE5102] transition-colors flex-shrink-0" />
+                      <ExternalLink className="w-3.5 h-3.5 text-[var(--fg-tertiary)] group-hover:text-[#FF0000] transition-colors flex-shrink-0" />
                     </Link>
                   ))}
               </div>

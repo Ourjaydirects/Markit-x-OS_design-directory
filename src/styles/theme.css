@@ -33,20 +33,20 @@
   /* Brand - Core Palette (consistent across themes) */
   --brand-charcoal: #191919;
   --brand-vanilla: #FFFAEE;
-  --brand-aperol: #FE5102;
+  --brand-aperol: #FF0000;
 
   /* Brand - Functional */
-  --bg-brand-solid: #FE5102;
-  --bg-brand-solid_hover: #e64400;
-  --fg-brand-primary: #fe5102;
-  --fg-brand-secondary: #cc4100;
+  --bg-brand-solid: #FF0000;
+  --bg-brand-solid_hover: #FF0000;
+  --fg-brand-primary: #FF0000;
+  --fg-brand-secondary: #FF0000;
 
   /* Focus */
-  --focus-ring: #FE5102;
+  --focus-ring: #FF0000;
 
   /* Status/Pricing Colors */
   --color-pricing-free: #10B981;
-  --color-pricing-freemium: #F59E0B;
+  --color-pricing-freemium: #FF0000;
   --color-pricing-paid: #EC4899;
   --color-pricing-default: #9CA3AF;
 
@@ -95,13 +95,13 @@
   --border-tertiary: #1F1F1F;
 
   /* Brand - Functional (brighter for dark backgrounds) */
-  --bg-brand-solid_hover: #ff7a38;
-  --fg-brand-primary: #ff7a38;
-  --fg-brand-secondary: #FE5102;
+  --bg-brand-solid_hover: #FF0000;
+  --fg-brand-primary: #FF0000;
+  --fg-brand-secondary: #FF0000;
 
   /* Status/Pricing Colors - slightly brighter for dark mode */
   --color-pricing-free: #34D399;
-  --color-pricing-freemium: #FBBF24;
+  --color-pricing-freemium: #FF0000;
   --color-pricing-paid: #F472B6;
   --color-pricing-default: #9CA3AF;
 

@@ -47,7 +47,7 @@ function getTierColor(tier: ScoreTier): string {
     case 'industry-leader':
       return '#10b981'; // emerald-500
     case 'excellent':
-      return '#f59e0b'; // amber-500
+      return '#FF0000';
     case 'good':
       return '#3b82f6'; // blue-500
     case 'niche':

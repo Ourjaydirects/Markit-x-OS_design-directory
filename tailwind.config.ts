@@ -19,7 +19,7 @@ export default {
         brand: {
           charcoal: '#191919',
           vanilla: '#FFFAEE',
-          aperol: '#FE5102',
+          aperol: '#FF0000',
         },
         // OS palette - now maps to CSS variables for theme responsiveness
         // Class names retain '-dark' suffix for backwards compatibility

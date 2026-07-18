@@ -14,6 +14,7 @@ import { CategoryButtons } from '../components/ui/CategoryButtons';
 import { AIFilterResponse } from '../components/ui/AIFilterResponse';
 import InspoResourceTooltip from '../components/ui/InspoResourceTooltip';
 import { InspoTable } from '../components/ui/InspoTable';
+import { ThemeToggle } from '../components/ui/ThemeToggle';
 import { CardView } from '../components/card-view';
 import {
   semanticSearch,
@@ -552,6 +553,8 @@ export default function Home() {
           >
             <Search className="w-5 h-5" />
           </button>
+
+          <ThemeToggle />
 
           {/* GitHub repository link */}
           <a

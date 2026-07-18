@@ -1,6 +1,6 @@
 import { createContext, useContext, useEffect, useState, type ReactNode } from 'react';
 
-type Theme = 'light' | 'dark' | 'system';
+type Theme = 'light' | 'dark';
 type ResolvedTheme = 'light' | 'dark';
 
 interface ThemeContextValue {
@@ -11,43 +11,31 @@ interface ThemeContextValue {
 
 const ThemeContext = createContext<ThemeContextValue | undefined>(undefined);
 
-/**
- * Theme provider component - locked to permanent dark mode
- *
- * The toggle has been removed but we keep the provider structure
- * so useTheme() continues to work without errors.
- *
- * To restore light mode toggle in the future:
- * - See git history for original implementation
- * - All CSS variables for light/dark themes are preserved
- */
 export function ThemeProvider({ children }: { children: ReactNode }) {
-  const [mounted, setMounted] = useState(false);
+  const [theme, setThemeState] = useState<Theme>('light');
 
-  // Always apply dark mode on mount
   useEffect(() => {
-    const root = document.documentElement;
-    root.classList.remove('light', 'dark');
-    root.classList.add('dark');
-
-    // Remove no-transitions class after initial paint to enable smooth transitions
-    requestAnimationFrame(() => {
-      root.classList.remove('no-transitions');
-    });
-
-    setMounted(true);
+    const savedTheme = window.localStorage.getItem('theme');
+    if (savedTheme === 'dark' || savedTheme === 'light') {
+      setThemeState(savedTheme);
+    }
   }, []);
 
-  // Prevent hydration mismatch by returning null until mounted
-  if (!mounted) {
-    return null;
-  }
+  useEffect(() => {
+    const root = document.documentElement;
+    root.classList.toggle('dark', theme === 'dark');
+    root.classList.toggle('light', theme === 'light');
+    window.localStorage.setItem('theme', theme);
+  }, [theme]);
 
-  // Provide fixed dark theme values - setTheme is a no-op
+  const setTheme = (nextTheme: Theme) => {
+    setThemeState(nextTheme);
+  };
+
   const contextValue: ThemeContextValue = {
-    theme: 'dark',
-    resolvedTheme: 'dark',
-    setTheme: () => {}, // No-op since theme is locked
+    theme,
+    resolvedTheme: theme,
+    setTheme,
   };
 
   return (

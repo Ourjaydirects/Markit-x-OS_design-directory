@@ -58,9 +58,9 @@ export type CategoryName = (typeof CATEGORY_ORDER)[number];
  */
 export const CATEGORY_COLORS: Record<string, string> = {
   'Community': '#3B82F6',
-  'Inspiration': '#FF5102',
+  'Inspiration': '#FF0000',
   'Learning': '#10B981',
-  'Templates': '#F59E0B',
+  'Templates': '#FF0000',
   'Tools': '#EC4899',
   'AI': '#06B6D4',
 };

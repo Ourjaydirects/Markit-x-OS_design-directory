@@ -1,27 +1,15 @@
-import { useState, useEffect } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-import { Sun, Moon, Monitor } from 'lucide-react';
+import { useEffect, useState } from 'react';
+import { AnimatePresence, motion } from 'framer-motion';
+import { Moon, Sun } from 'lucide-react';
 import { useTheme } from '../../lib/theme-provider';
 
-type ThemeOption = 'light' | 'dark' | 'system';
-
-/**
- * Theme configuration for each mode
- */
-const themeConfig: Record<ThemeOption, {
-  icon: typeof Sun;
-  label: string;
-  next: ThemeOption;
-}> = {
+const themeConfig = {
   light: { icon: Sun, label: 'Light', next: 'dark' },
-  dark: { icon: Moon, label: 'Dark', next: 'system' },
-  system: { icon: Monitor, label: 'System', next: 'light' },
-};
+  dark: { icon: Moon, label: 'Dark', next: 'light' },
+} as const;
 
 /**
- * Theme toggle button that cycles through light → dark → system modes
- * Features animated icon transitions using framer-motion
- * Hidden on mobile (below md breakpoint)
+ * Theme toggle button that cycles between light and dark modes.
  */
 export function ThemeToggle() {
   const [mounted, setMounted] = useState(false);
@@ -31,15 +19,13 @@ export function ThemeToggle() {
     setMounted(true);
   }, []);
 
-  // Show skeleton while mounting to prevent hydration mismatch
   if (!mounted) {
     return (
-      <div 
-        className="hidden md:flex items-center justify-center w-10 h-10 
-          bg-os-surface-dark/50 border border-[var(--border-secondary)] rounded-lg"
+      <div
+        className="flex h-10 w-10 items-center justify-center rounded-lg border border-[var(--border-secondary)] bg-os-surface-dark/50"
         aria-hidden="true"
       >
-        <div className="w-5 h-5 animate-pulse bg-[var(--bg-tertiary)] rounded" />
+        <div className="h-5 w-5 animate-pulse rounded bg-[var(--bg-tertiary)]" />
       </div>
     );
   }
@@ -49,12 +35,10 @@ export function ThemeToggle() {
   return (
     <button
       onClick={() => setTheme(next)}
-      className="hidden md:flex items-center justify-center w-10 h-10
-        bg-os-surface-dark/50 border border-[var(--border-secondary)] rounded-lg
-        text-os-text-secondary-dark hover:text-os-text-primary-dark
-        hover:border-brand-aperol/30 transition-all duration-200"
+      className="flex h-10 w-10 items-center justify-center rounded-lg border border-[var(--border-secondary)] bg-os-surface-dark/50 text-os-text-secondary-dark transition-colors duration-200 hover:border-[var(--fg-tertiary)] hover:text-os-text-primary-dark"
       aria-label={`Theme: ${label}. Click to switch to ${themeConfig[next].label} mode`}
       title={`${label} mode`}
+      type="button"
     >
       <AnimatePresence mode="wait" initial={false}>
         <motion.div
@@ -62,12 +46,12 @@ export function ThemeToggle() {
           initial={{ opacity: 0, rotate: -90, scale: 0.8 }}
           animate={{ opacity: 1, rotate: 0, scale: 1 }}
           exit={{ opacity: 0, rotate: 90, scale: 0.8 }}
-          transition={{ 
+          transition={{
             duration: 0.2,
-            ease: [0.4, 0, 0.2, 1] // Custom easing for smooth feel
+            ease: [0.4, 0, 0.2, 1],
           }}
         >
-          <Icon className="w-5 h-5" />
+          <Icon className="h-5 w-5" />
         </motion.div>
       </AnimatePresence>
     </button>

@@ -1,0 +1,55 @@
+---
+name: "source-command-restart-vite"
+description: "Clear cache and restart dev server"
+---
+
+# source-command-restart-vite
+
+Use this skill when the user asks to run the migrated source command `restart-vite`.
+
+## Command Template
+
+Clear all caches and restart the development server for a fresh start.
+
+## Steps
+
+1. **Kill any running Vite/esbuild processes:**
+   ```bash
+   pkill -9 -f 'vite' 2>/dev/null
+   pkill -9 -f 'esbuild' 2>/dev/null
+   ```
+
+2. **Check cache sizes before clearing** (for reporting):
+   ```bash
+   du -sh $WORKING_DIRECTORY/node_modules/.vite 2>/dev/null
+   du -sh $WORKING_DIRECTORY/node_modules/.cache 2>/dev/null
+   du -sh $WORKING_DIRECTORY/dist 2>/dev/null
+   ```
+
+3. **Remove cache directories:**
+   ```bash
+   rm -rf $WORKING_DIRECTORY/node_modules/.vite $WORKING_DIRECTORY/node_modules/.cache $WORKING_DIRECTORY/dist
+   ```
+
+4. **Report what was cleared** - inform the user how much space was freed.
+
+5. **Verify critical assets exist:**
+   ```bash
+   ls $WORKING_DIRECTORY/public/textures/galaxy/skybox.hdr 2>/dev/null || echo "⚠️ Warning: skybox.hdr texture missing - 3D scene may fail to load"
+   ```
+
+6. **Remind user to clear browser cache:**
+   Tell the user: "Clear your browser cache with Cmd+Shift+R (Mac) or Ctrl+Shift+R (Windows/Linux), or open DevTools → Network → check 'Disable cache'"
+
+7. **Start the dev server:**
+   Tell the user to run `bun dev` manually in their terminal, as background process execution may not capture Vite's interactive output properly.
+
+8. **Confirm port** - let the user know the server runs on **port 3001** (configured in vite.config.ts).
+
+## Notes
+
+- Uses `$WORKING_DIRECTORY` for reliable path resolution regardless of Codex's current directory
+- The Vite cache in `node_modules/.vite` can grow over time
+- Clearing caches resolves most "stale build" issues
+- If you see a white page after restart, try clearing browser cache - the 3D skybox texture may be cached as a failed request
+- This is a **Vite project**, not Next.js

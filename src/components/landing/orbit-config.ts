@@ -29,14 +29,14 @@ export const RING_CONFIGS: OrbitRingConfig[] = [
     radius: 58,
     speed: 0.4,
     count: 2,
-    glowColor: '#FE5102', // Aperol (brightest, center)
+    glowColor: '#FF0000', // Red (brightest, center)
     strokeOpacity: 0.5,
   },
   {
     radius: 105,
     speed: -0.25,
     count: 4,
-    glowColor: '#cc4100', // Darker orange
+    glowColor: '#FF0000', // Red
     strokeOpacity: 0.4,
   },
 ];

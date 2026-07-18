@@ -219,7 +219,7 @@ export function PrismaticBurst({
   intensity = 1.1,
   speed = 0.25,
   animationType = 'rotate3d',
-  colors = ['#FE5102', '#FFFAEE', '#191919'],
+  colors = ['#FF0000', '#FFFAEE', '#191919'],
   distort = 37.5,
   rayCount = 75,
   paused = false,

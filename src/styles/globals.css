@@ -10,7 +10,7 @@
   :root {
     --brand-charcoal: #191919;
     --brand-vanilla: #FFFAEE;
-    --brand-aperol: #FE5102;
+    --brand-aperol: #FF0000;
   }
 
   body {
@@ -106,25 +106,25 @@
   animation: fade-up-no-translate 0.6s ease-out forwards;
 }
 
-/* AI Loader Animations - Aperol branded */
+/* AI Loader Animations - red branded */
 @keyframes loader-rotate {
   0% {
     transform: rotate(90deg);
     box-shadow: 0 10px 20px 0 #fff inset,
-      0 20px 30px 0 #FE7A42 inset,
-      0 60px 60px 0 #FE5102 inset;
+      0 20px 30px 0 #FF0000 inset,
+      0 60px 60px 0 #FF0000 inset;
   }
   50% {
     transform: rotate(270deg);
     box-shadow: 0 10px 20px 0 #fff inset,
-      0 20px 10px 0 #FF6A2A inset,
-      0 40px 60px 0 #C94000 inset;
+      0 20px 10px 0 #FF0000 inset,
+      0 40px 60px 0 #FF0000 inset;
   }
   100% {
     transform: rotate(450deg);
     box-shadow: 0 10px 20px 0 #fff inset,
-      0 20px 30px 0 #FE7A42 inset,
-      0 60px 60px 0 #FE5102 inset;
+      0 20px 30px 0 #FF0000 inset,
+      0 60px 60px 0 #FF0000 inset;
   }
 }
 
