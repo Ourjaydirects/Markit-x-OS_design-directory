@@ -400,7 +400,7 @@ export default function ResourceDetail() {
                       rel="noopener noreferrer"
                       className="group flex items-center gap-2"
                     >
-                      <h1 className="text-2xl md:text-3xl font-bold tracking-tight group-hover:text-[#FF0000] transition-colors">
+                      <h1 className="text-2xl md:text-3xl font-bold tracking-tight group-hover:text-white transition-colors">
                         {resource.name}
                       </h1>
                       <motion.span
@@ -655,21 +655,19 @@ export default function ResourceDetail() {
                     <Link
                       key={related.id}
                       to={`/resource/${related.id}`}
-                      className="group flex items-center gap-3 p-3 rounded-lg bg-[var(--bg-secondary)]/40 border border-[var(--border-secondary)] hover:border-[var(--fg-tertiary)] hover:bg-[var(--bg-secondary)]/60 transition-all"
-                    >
+                      className="group flex items-center gap-3 p-3 rounded-lg bg-[var(--bg-secondary)]/40 border border-[var(--border-secondary)] hover:border-[#FF0000] hover:bg-[#FF0000] transition-all"                    >
                       <ResourceLogo resource={related} size="md" />
 
                       <div className="flex-1 min-w-0">
-                        <h3 className="text-sm font-medium text-[var(--fg-primary)] group-hover:text-[#FF0000] transition-colors truncate">
+                      <h3 className="text-sm font-medium text-[var(--fg-primary)] group-hover:text-white transition-colors truncate">
                           {related.name}
                         </h3>
-                        <p className="text-xs text-[var(--fg-tertiary)] truncate">
+                        <p className="text-xs text-[var(--fg-tertiary)] group-hover:text-black transition-colors truncate">
                           {related.subCategory || related.category || 'Resource'}
                         </p>
                       </div>
 
-                      <ExternalLink className="w-3.5 h-3.5 text-[var(--fg-tertiary)] group-hover:text-[#FF0000] transition-colors flex-shrink-0" />
-                    </Link>
+                      <ExternalLink className="w-3.5 h-3.5 text-[var(--fg-tertiary)] group-hover:text-white transition-colors flex-shrink-0" />                    </Link>
                   ))}
               </div>
             </motion.div>
