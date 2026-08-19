@@ -125,6 +125,9 @@ export default function Home() {
   const categoryParam = searchParams.get('category');
   const subCategoryParam = searchParams.get('subCategory');
   const pricingParam = searchParams.get('pricing');
+  const ratingParam = searchParams.get('rating');
+  const addedParam = searchParams.get('added');
+  const searchParam = searchParams.get('search');
   const tierParam = searchParams.get('tier');
   const featuredParam = searchParams.get('featured');
   const opensourceParam = searchParams.get('opensource');
@@ -733,7 +736,7 @@ export default function Home() {
                   initialTier={tierParam || undefined}
                   initialFeatured={featuredParam || undefined}
                   initialOpensource={opensourceParam || undefined}
-                  isFromUrl={!!(categoryParam || subCategoryParam || pricingParam || tierParam || featuredParam || opensourceParam)}
+                  isFromUrl={!!(categoryParam || subCategoryParam || pricingParam || ratingParam || addedParam || searchParam || tierParam || featuredParam || opensourceParam)}
                 />
               </div>
             </motion.div>

@@ -1,5 +1,5 @@
 import { useState, useMemo, useRef, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ChevronUp, ChevronDown, ChevronsUpDown, ExternalLink, Search, X, Plus } from 'lucide-react';
 import type { NormalizedResource } from '../../types/resource';
@@ -69,6 +69,94 @@ function getAvailableSubCategories(
   return categorySubCategories;
 }
 
+const RATING_VALUES = new Set(RATING_RANGES.map((range) => range.value));
+const FILTER_URL_KEYS = ['category', 'subCategory', 'pricing', 'rating', 'added', 'search'] as const;
+
+interface TableFilterSnapshot {
+  category: string;
+  subCategory: string;
+  pricing: string;
+  rating: string;
+  added: string;
+  search: string;
+}
+
+function readFiltersFromSearchParams(params: URLSearchParams): TableFilterSnapshot {
+  return {
+    category: params.get('category') || 'all',
+    subCategory: params.get('subCategory') || 'all',
+    pricing: params.get('pricing') || 'all',
+    rating: params.get('rating') || 'all',
+    added: params.get('added') || 'all',
+    search: params.get('search') || '',
+  };
+}
+
+function sanitizeTableFilters(
+  raw: TableFilterSnapshot,
+  filterOptions: { categories: string[]; subCategories: string[]; pricings: string[] },
+  dataset: NormalizedResource[],
+): TableFilterSnapshot {
+  const category =
+    raw.category !== 'all' && !filterOptions.categories.includes(raw.category)
+      ? 'all'
+      : raw.category;
+
+  const availableSubCategories = getAvailableSubCategories(
+    category,
+    filterOptions.subCategories,
+    dataset,
+  );
+  const subCategory =
+    raw.subCategory !== 'all' && !availableSubCategories.includes(raw.subCategory)
+      ? 'all'
+      : raw.subCategory;
+
+  const pricing =
+    raw.pricing !== 'all' && !filterOptions.pricings.includes(raw.pricing)
+      ? 'all'
+      : raw.pricing;
+
+  const rating = RATING_RANGES.some((range) => range.value === raw.rating)
+    ? raw.rating
+    : 'all';
+
+  const added = raw.added === 'new' ? 'new' : 'all';
+
+  return {
+    category,
+    subCategory,
+    pricing,
+    rating,
+    added,
+    search: raw.search,
+  };
+}
+
+function writeFiltersToSearchParams(
+  prev: URLSearchParams,
+  filters: TableFilterSnapshot,
+): URLSearchParams {
+  const next = new URLSearchParams(prev);
+  const apply = (key: string, value: string, isDefault: boolean) => {
+    if (isDefault) {
+      next.delete(key);
+    } else {
+      next.set(key, value);
+    }
+  };
+
+  apply('category', filters.category, filters.category === 'all');
+  apply('subCategory', filters.subCategory, filters.subCategory === 'all');
+  apply('pricing', filters.pricing, filters.pricing === 'all');
+  apply('rating', filters.rating, filters.rating === 'all');
+  apply('added', filters.added, filters.added === 'all');
+  apply('search', filters.search, filters.search.trim() === '');
+
+  const unchanged = FILTER_URL_KEYS.every((key) => next.get(key) === prev.get(key));
+  return unchanged ? prev : next;
+}
+
 function NewResourceBadge({ isNew }: { isNew: boolean }) {
   if (!isNew) return null;
 
@@ -104,17 +192,25 @@ export function InspoTable({
   isFromUrl,
 }: InspoTableProps) {
   const navigate = useNavigate();
+  const [searchParams, setSearchParams] = useSearchParams();
+  const urlFilters = readFiltersFromSearchParams(searchParams);
 
-  // Filter state - initialize from props
-  const [categoryFilter, setCategoryFilter] = useState<string>(initialCategory || 'all');
-  const [subCategoryFilter, setSubCategoryFilter] = useState<string>(initialSubCategory || 'all');
-  const [pricingFilter, setPricingFilter] = useState<string>(initialPricing || 'all');
-  const [ratingFilter, setRatingFilter] = useState<string>('all');
-  const [newFilter, setNewFilter] = useState<string>('all');
+  // Filter state - initialize from URL, then existing props
+  const [categoryFilter, setCategoryFilter] = useState<string>(
+    urlFilters.category !== 'all' ? urlFilters.category : initialCategory || 'all',
+  );
+  const [subCategoryFilter, setSubCategoryFilter] = useState<string>(
+    urlFilters.subCategory !== 'all' ? urlFilters.subCategory : initialSubCategory || 'all',
+  );
+  const [pricingFilter, setPricingFilter] = useState<string>(
+    urlFilters.pricing !== 'all' ? urlFilters.pricing : initialPricing || 'all',
+  );
+  const [ratingFilter, setRatingFilter] = useState<string>(urlFilters.rating);
+  const [newFilter, setNewFilter] = useState<string>(urlFilters.added);
   const [tierFilter, _setTierFilter] = useState<string>(initialTier || 'all');
   const [featuredFilter, _setFeaturedFilter] = useState<string>(initialFeatured || 'all');
   const [opensourceFilter, _setOpensourceFilter] = useState<string>(initialOpensource || 'all');
-  const [searchQuery, setSearchQuery] = useState<string>('');
+  const [searchQuery, setSearchQuery] = useState<string>(urlFilters.search);
   const [filtersOpen, setFiltersOpen] = useState(false);
 
   // Track if user has modified filters (hides the URL filter banner)
@@ -128,11 +224,12 @@ export function InspoTable({
     if (pricingFilter !== 'all') labels.push(pricingFilter);
     if (ratingFilter !== 'all') labels.push(`Rating ${ratingFilter}`);
     if (newFilter === 'new') labels.push('New (Last 7 Days)');
+    if (searchQuery) labels.push(`“${searchQuery}”`);
     if (tierFilter !== 'all') labels.push(`Tier ${tierFilter}`);
     if (featuredFilter === 'true') labels.push('Featured');
     if (opensourceFilter === 'true') labels.push('Open Source');
     return labels.join(', ');
-  }, [categoryFilter, subCategoryFilter, pricingFilter, ratingFilter, newFilter, tierFilter, featuredFilter, opensourceFilter]);
+  }, [categoryFilter, subCategoryFilter, pricingFilter, ratingFilter, newFilter, searchQuery, tierFilter, featuredFilter, opensourceFilter]);
 
   const hasActiveFilters = activeFilterLabel.length > 0;
   const showFilterBanner = isFromUrl && hasActiveFilters && !userHasModifiedFilters;
@@ -144,6 +241,7 @@ export function InspoTable({
     setPricingFilter('all');
     setRatingFilter('all');
     setNewFilter('all');
+    setSearchQuery('');
     setUserHasModifiedFilters(true);
   };
 
@@ -189,9 +287,58 @@ export function InspoTable({
     [categoryFilter, filterOptions.subCategories, resources],
   );
 
-  const subCategorySelectValue = availableSubCategories.includes(subCategoryFilter)
-    ? subCategoryFilter
+  const sanitizedFilters = useMemo(
+    () =>
+      sanitizeTableFilters(
+        {
+          category: categoryFilter,
+          subCategory: subCategoryFilter,
+          pricing: pricingFilter,
+          rating: ratingFilter,
+          added: newFilter,
+          search: searchQuery,
+        },
+        filterOptions,
+        resources,
+      ),
+    [categoryFilter, subCategoryFilter, pricingFilter, ratingFilter, newFilter, searchQuery, filterOptions, resources],
+  );
+
+  // Drop invalid URL/state values (including dependent sub-category mismatches)
+  useEffect(() => {
+    if (sanitizedFilters.category !== categoryFilter) setCategoryFilter(sanitizedFilters.category);
+    if (sanitizedFilters.subCategory !== subCategoryFilter) setSubCategoryFilter(sanitizedFilters.subCategory);
+    if (sanitizedFilters.pricing !== pricingFilter) setPricingFilter(sanitizedFilters.pricing);
+    if (sanitizedFilters.rating !== ratingFilter) setRatingFilter(sanitizedFilters.rating);
+    if (sanitizedFilters.added !== newFilter) setNewFilter(sanitizedFilters.added);
+  }, [sanitizedFilters, categoryFilter, subCategoryFilter, pricingFilter, ratingFilter, newFilter]);
+
+  // Keep filter query params in sync without wiping display or other params
+  useEffect(() => {
+    setSearchParams((prev) => writeFiltersToSearchParams(prev, sanitizedFilters), { replace: true });
+  }, [sanitizedFilters, setSearchParams]);
+
+  const categorySelectValue =
+    sanitizedFilters.category === 'all' || filterOptions.categories.includes(sanitizedFilters.category)
+      ? sanitizedFilters.category
+      : 'all';
+
+  const subCategorySelectValue = availableSubCategories.includes(sanitizedFilters.subCategory)
+    ? sanitizedFilters.subCategory
     : 'all';
+
+  const pricingSelectValue =
+    sanitizedFilters.pricing === 'all' || filterOptions.pricings.includes(sanitizedFilters.pricing)
+      ? sanitizedFilters.pricing
+      : 'all';
+
+  const ratingSelectValue = RATING_VALUES.has(
+    sanitizedFilters.rating as typeof RATING_RANGES[number]['value'],
+  )
+    ? sanitizedFilters.rating
+    : 'all';
+
+  const addedSelectValue = sanitizedFilters.added === 'new' ? 'new' : 'all';
 
   const handleCategoryChange = (value: string) => {
     setCategoryFilter(value);
@@ -437,7 +584,7 @@ export function InspoTable({
                         </label>
                         <select
                           id="category-filter"
-                          value={categoryFilter}
+                          value={categorySelectValue}
                           onChange={(e) => handleCategoryChange(e.target.value)}
                           className="px-2 sm:px-3 py-2 bg-[var(--bg-secondary)] border border-[var(--border-secondary)] rounded-lg text-xs sm:text-sm text-[var(--fg-primary)] focus:outline-none focus:ring-1 focus:ring-[var(--border-primary)]/60 focus:border-[var(--border-primary)] transition-colors cursor-pointer hover:border-[var(--fg-tertiary)] truncate"
                         >
@@ -477,7 +624,7 @@ export function InspoTable({
                         </label>
                         <select
                           id="pricing-filter"
-                          value={pricingFilter}
+                          value={pricingSelectValue}
                           onChange={(e) => handlePricingChange(e.target.value)}
                           className="px-2 sm:px-3 py-2 bg-[var(--bg-secondary)] border border-[var(--border-secondary)] rounded-lg text-xs sm:text-sm text-[var(--fg-primary)] focus:outline-none focus:ring-1 focus:ring-[var(--border-primary)]/60 focus:border-[var(--border-primary)] transition-colors cursor-pointer hover:border-[var(--fg-tertiary)] truncate"
                         >
@@ -497,7 +644,7 @@ export function InspoTable({
                         </label>
                         <select
                           id="rating-filter"
-                          value={ratingFilter}
+                          value={ratingSelectValue}
                           onChange={(e) => handleRatingChange(e.target.value)}
                           className="px-2 sm:px-3 py-2 bg-[var(--bg-secondary)] border border-[var(--border-secondary)] rounded-lg text-xs sm:text-sm text-[var(--fg-primary)] focus:outline-none focus:ring-1 focus:ring-[var(--border-primary)]/60 focus:border-[var(--border-primary)] transition-colors cursor-pointer hover:border-[var(--fg-tertiary)] truncate"
                         >
@@ -516,7 +663,7 @@ export function InspoTable({
                         </label>
                         <select
                           id="new-filter"
-                          value={newFilter}
+                          value={addedSelectValue}
                           onChange={(e) => handleNewFilterChange(e.target.value)}
                           className="px-2 sm:px-3 py-2 bg-[var(--bg-secondary)] border border-[var(--border-secondary)] rounded-lg text-xs sm:text-sm text-[var(--fg-primary)] focus:outline-none focus:ring-1 focus:ring-[var(--border-primary)]/60 focus:border-[var(--border-primary)] transition-colors cursor-pointer hover:border-[var(--fg-tertiary)] truncate"
                         >
