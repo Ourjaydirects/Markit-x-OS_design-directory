@@ -1,7 +1,7 @@
 import { useState, useMemo, useRef, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { motion } from 'framer-motion';
-import { ChevronUp, ChevronDown, ChevronsUpDown, ExternalLink, Search, X } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { ChevronUp, ChevronDown, ChevronsUpDown, ExternalLink, Search, X, Plus } from 'lucide-react';
 import type { NormalizedResource } from '../../types/resource';
 import { isNewResource } from '../../lib/is-new-resource';
 import { MobileResourceCard } from './MobileResourceCard';
@@ -34,6 +34,40 @@ const RATING_RANGES = [
   { value: '6-7', label: '6-7', min: 6.0, max: 6.99 },
   { value: 'below-6', label: 'Below 6', min: 0, max: 5.99 },
 ] as const;
+
+const CATEGORY_SUBCATEGORY_MAP: Record<string, readonly string[]> = {
+  'AI Tools': ['Audio', 'Video', 'Assistants', 'Generative'],
+  Tools: ['Development', 'Productivity', 'Design'],
+  Inspiration: ['Typography', 'UI/UX', '3D Mockups', 'Design Archive'],
+  Learning: ['Courses', 'Docs'],
+  Templates: ['Mockups', 'UI Kits'],
+};
+
+function getAvailableSubCategories(
+  category: string,
+  allSubCategories: string[],
+  dataset: NormalizedResource[],
+): string[] {
+  if (category === 'all') {
+    return allSubCategories;
+  }
+
+  const fromCategory = new Set<string>();
+  dataset.forEach((resource) => {
+    if (resource.category === category && resource.subCategory) {
+      fromCategory.add(resource.subCategory);
+    }
+  });
+  const categorySubCategories = Array.from(fromCategory).sort();
+
+  const mapped = CATEGORY_SUBCATEGORY_MAP[category];
+  if (mapped) {
+    const relevant = mapped.filter((sub) => fromCategory.has(sub));
+    if (relevant.length > 0) return relevant;
+  }
+
+  return categorySubCategories;
+}
 
 function NewResourceBadge({ isNew }: { isNew: boolean }) {
   if (!isNew) return null;
@@ -81,6 +115,7 @@ export function InspoTable({
   const [featuredFilter, _setFeaturedFilter] = useState<string>(initialFeatured || 'all');
   const [opensourceFilter, _setOpensourceFilter] = useState<string>(initialOpensource || 'all');
   const [searchQuery, setSearchQuery] = useState<string>('');
+  const [filtersOpen, setFiltersOpen] = useState(false);
 
   // Track if user has modified filters (hides the URL filter banner)
   const [userHasModifiedFilters, setUserHasModifiedFilters] = useState(false);
@@ -109,32 +144,6 @@ export function InspoTable({
     setPricingFilter('all');
     setRatingFilter('all');
     setNewFilter('all');
-    setUserHasModifiedFilters(true);
-  };
-
-  // Wrap filter setters to track user modifications
-  const handleCategoryChange = (value: string) => {
-    setCategoryFilter(value);
-    setUserHasModifiedFilters(true);
-  };
-
-  const handleSubCategoryChange = (value: string) => {
-    setSubCategoryFilter(value);
-    setUserHasModifiedFilters(true);
-  };
-
-  const handlePricingChange = (value: string) => {
-    setPricingFilter(value);
-    setUserHasModifiedFilters(true);
-  };
-
-  const handleRatingChange = (value: string) => {
-    setRatingFilter(value);
-    setUserHasModifiedFilters(true);
-  };
-
-  const handleNewFilterChange = (value: string) => {
-    setNewFilter(value);
     setUserHasModifiedFilters(true);
   };
 
@@ -174,6 +183,49 @@ export function InspoTable({
       pricings: Array.from(pricings).sort(),
     };
   }, [resources]);
+
+  const availableSubCategories = useMemo(
+    () => getAvailableSubCategories(categoryFilter, filterOptions.subCategories, resources),
+    [categoryFilter, filterOptions.subCategories, resources],
+  );
+
+  const subCategorySelectValue = availableSubCategories.includes(subCategoryFilter)
+    ? subCategoryFilter
+    : 'all';
+
+  const handleCategoryChange = (value: string) => {
+    setCategoryFilter(value);
+    setUserHasModifiedFilters(true);
+
+    const nextSubCategories = getAvailableSubCategories(
+      value,
+      filterOptions.subCategories,
+      resources,
+    );
+    if (subCategoryFilter !== 'all' && !nextSubCategories.includes(subCategoryFilter)) {
+      setSubCategoryFilter('all');
+    }
+  };
+
+  const handleSubCategoryChange = (value: string) => {
+    setSubCategoryFilter(value);
+    setUserHasModifiedFilters(true);
+  };
+
+  const handlePricingChange = (value: string) => {
+    setPricingFilter(value);
+    setUserHasModifiedFilters(true);
+  };
+
+  const handleRatingChange = (value: string) => {
+    setRatingFilter(value);
+    setUserHasModifiedFilters(true);
+  };
+
+  const handleNewFilterChange = (value: string) => {
+    setNewFilter(value);
+    setUserHasModifiedFilters(true);
+  };
 
   // Apply filters and sorting
   const filteredAndSortedResources = useMemo(() => {
@@ -285,151 +337,200 @@ export function InspoTable({
           </motion.div>
         )}
 
-        {/* Filters */}
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ duration: 0.3, delay: 0.05, ease: smoothEase }}
-          className="bg-[var(--bg-primary)] backdrop-blur-xl border-b border-[var(--border-secondary)]"
-        >
-        <div className="p-4 md:p-6 space-y-4">
-          {/* Desktop: Flex row with filters right-aligned */}
-          {/* Mobile: Stack vertically with labels visible */}
-          <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-4">
-            {/* Search Filter */}
-            <div className="w-full md:w-auto">
-              <label htmlFor="search-filter" className="block text-xs font-accent uppercase tracking-wider text-[var(--fg-secondary)] mb-2">
-                Search
-              </label>
-              <div className="relative">
-                <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[var(--fg-secondary)]" />
-                <input
-                  id="search-filter"
-                  type="text"
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                  placeholder="Filter resources..."
-                  className="w-full md:w-48 pl-9 pr-8 py-2 bg-[var(--bg-secondary)] border border-[var(--border-secondary)] rounded-lg text-xs sm:text-sm text-[var(--fg-primary)] placeholder:text-[var(--fg-secondary)] focus:outline-none focus:ring-1 focus:ring-[var(--border-primary)]/60 focus:border-[var(--border-primary)] transition-colors"
-                />
-                {searchQuery && (
-                  <button
-                    onClick={() => setSearchQuery('')}
-                    className="absolute right-2 top-1/2 -translate-y-1/2 p-1 text-[var(--fg-secondary)] hover:text-[var(--fg-primary)]"
-                  >
-                    <X className="w-3 h-3" />
-                  </button>
-                )}
-              </div>
+        {/* Sticky filter header + collapsible panel */}
+        <div className="bg-[var(--bg-primary)] backdrop-blur-xl border-b border-[var(--border-secondary)]">
+          <div className="flex items-center justify-between gap-3 px-4 md:px-6 py-2.5">
+            <div className="flex min-w-0 items-center gap-3">
+              {!filtersOpen && (
+                <button
+                  type="button"
+                  onClick={() => setFiltersOpen(true)}
+                  className="inline-flex shrink-0 items-center gap-1.5 rounded-lg border border-[var(--border-secondary)] bg-[var(--bg-secondary)]/30 px-3 py-1.5 text-xs font-medium text-[var(--fg-primary)] transition-colors hover:bg-[var(--bg-secondary)]/60 hover:border-[var(--fg-tertiary)] focus-visible:outline-none focus-visible:border-[var(--border-primary)]"
+                  aria-expanded={false}
+                  aria-controls="inspo-filter-panel"
+                >
+                  <Plus className="h-3.5 w-3.5" aria-hidden="true" />
+                  Filters
+                </button>
+              )}
+              {filtersOpen && (
+                <span className="text-xs font-accent uppercase tracking-wider text-[var(--fg-secondary)]">
+                  Filters
+                </span>
+              )}
+              {!filtersOpen && hasActiveFilters && (
+                <span className="hidden min-w-0 truncate text-xs text-[var(--fg-tertiary)] sm:inline">
+                  {activeFilterLabel}
+                </span>
+              )}
             </div>
 
-            {/* Filter Dropdowns - 5 columns on mobile, flex row on desktop */}
-            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 md:flex gap-3 md:gap-4">
-              {/* Category Filter */}
-              <div className="flex flex-col">
-                <label htmlFor="category-filter" className="block text-xs font-accent uppercase tracking-wider text-[var(--fg-secondary)] mb-2">
-                  Category
-                </label>
-                <select
-                  id="category-filter"
-                  value={categoryFilter}
-                  onChange={(e) => handleCategoryChange(e.target.value)}
-                  className="px-2 sm:px-3 py-2 bg-[var(--bg-secondary)] border border-[var(--border-secondary)] rounded-lg text-xs sm:text-sm text-[var(--fg-primary)] focus:outline-none focus:ring-1 focus:ring-[var(--border-primary)]/60 focus:border-[var(--border-primary)] transition-colors cursor-pointer hover:border-[var(--fg-tertiary)] truncate"
-                >
-                  <option value="all">All</option>
-                  {filterOptions.categories.map((category) => (
-                    <option key={category} value={category}>
-                      {category}
-                    </option>
-                  ))}
-                </select>
+            <div className="flex shrink-0 items-center gap-2">
+              <div className="text-xs sm:text-sm text-[var(--fg-secondary)]">
+                <span className="font-accent text-brand-aperol">{filteredAndSortedResources.length}</span>
+                {' '}of{' '}
+                <span className="font-medium">{resources.length}</span>
+                {' '}resources
               </div>
-
-              {/* Sub-category Filter */}
-              <div className="flex flex-col">
-                <label htmlFor="subcategory-filter" className="block text-xs font-accent uppercase tracking-wider text-[var(--fg-secondary)] mb-2">
-                  Sub-cat
-                </label>
-                <select
-                  id="subcategory-filter"
-                  value={subCategoryFilter}
-                  onChange={(e) => handleSubCategoryChange(e.target.value)}
-                  className="px-2 sm:px-3 py-2 bg-[var(--bg-secondary)] border border-[var(--border-secondary)] rounded-lg text-xs sm:text-sm text-[var(--fg-primary)] focus:outline-none focus:ring-1 focus:ring-[var(--border-primary)]/60 focus:border-[var(--border-primary)] transition-colors cursor-pointer hover:border-[var(--fg-tertiary)] truncate"
+              {filtersOpen && (
+                <button
+                  type="button"
+                  onClick={() => setFiltersOpen(false)}
+                  className="inline-flex h-8 w-8 items-center justify-center rounded-lg text-[var(--fg-secondary)] transition-colors hover:bg-[var(--bg-secondary)]/50 hover:text-[var(--fg-primary)] focus-visible:outline-none focus-visible:border focus-visible:border-[var(--border-primary)]"
+                  aria-label="Close filters"
+                  aria-expanded={true}
+                  aria-controls="inspo-filter-panel"
                 >
-                  <option value="all">All</option>
-                  {filterOptions.subCategories.map((subCategory) => (
-                    <option key={subCategory} value={subCategory}>
-                      {subCategory}
-                    </option>
-                  ))}
-                </select>
-              </div>
-
-              {/* Pricing Filter */}
-              <div className="flex flex-col">
-                <label htmlFor="pricing-filter" className="block text-xs font-accent uppercase tracking-wider text-[var(--fg-secondary)] mb-2">
-                  Pricing
-                </label>
-                <select
-                  id="pricing-filter"
-                  value={pricingFilter}
-                  onChange={(e) => handlePricingChange(e.target.value)}
-                  className="px-2 sm:px-3 py-2 bg-[var(--bg-secondary)] border border-[var(--border-secondary)] rounded-lg text-xs sm:text-sm text-[var(--fg-primary)] focus:outline-none focus:ring-1 focus:ring-[var(--border-primary)]/60 focus:border-[var(--border-primary)] transition-colors cursor-pointer hover:border-[var(--fg-tertiary)] truncate"
-                >
-                  <option value="all">All</option>
-                  {filterOptions.pricings.map((pricing) => (
-                    <option key={pricing} value={pricing}>
-                      {pricing}
-                    </option>
-                  ))}
-                </select>
-              </div>
-
-              {/* Rating Filter */}
-              <div className="flex flex-col">
-                <label htmlFor="rating-filter" className="block text-xs font-accent uppercase tracking-wider text-[var(--fg-secondary)] mb-2">
-                  Rating
-                </label>
-                <select
-                  id="rating-filter"
-                  value={ratingFilter}
-                  onChange={(e) => handleRatingChange(e.target.value)}
-                  className="px-2 sm:px-3 py-2 bg-[var(--bg-secondary)] border border-[var(--border-secondary)] rounded-lg text-xs sm:text-sm text-[var(--fg-primary)] focus:outline-none focus:ring-1 focus:ring-[var(--border-primary)]/60 focus:border-[var(--border-primary)] transition-colors cursor-pointer hover:border-[var(--fg-tertiary)] truncate"
-                >
-                  {RATING_RANGES.map((range) => (
-                    <option key={range.value} value={range.value}>
-                      {range.label}
-                    </option>
-                  ))}
-                </select>
-              </div>
-
-              {/* New Filter */}
-              <div className="flex flex-col">
-                <label htmlFor="new-filter" className="block text-xs font-accent uppercase tracking-wider text-[var(--fg-secondary)] mb-2">
-                  Added
-                </label>
-                <select
-                  id="new-filter"
-                  value={newFilter}
-                  onChange={(e) => handleNewFilterChange(e.target.value)}
-                  className="px-2 sm:px-3 py-2 bg-[var(--bg-secondary)] border border-[var(--border-secondary)] rounded-lg text-xs sm:text-sm text-[var(--fg-primary)] focus:outline-none focus:ring-1 focus:ring-[var(--border-primary)]/60 focus:border-[var(--border-primary)] transition-colors cursor-pointer hover:border-[var(--fg-tertiary)] truncate"
-                >
-                  <option value="all">All</option>
-                  <option value="new">New (Last 7 Days)</option>
-                </select>
-              </div>
+                  <X className="h-4 w-4" aria-hidden="true" />
+                </button>
+              )}
             </div>
           </div>
 
-          {/* Results Count - with breathing room */}
-          <div className="text-sm text-[var(--fg-secondary)] pt-2">
-            <span className="font-accent text-brand-aperol">{filteredAndSortedResources.length}</span>
-            {' '}of{' '}
-            <span className="font-medium">{resources.length}</span>
-            {' '}resources
-          </div>
+          <AnimatePresence initial={false}>
+            {filtersOpen && (
+              <motion.div
+                id="inspo-filter-panel"
+                key="inspo-filter-panel"
+                initial={{ height: 0, opacity: 0 }}
+                animate={{ height: 'auto', opacity: 1 }}
+                exit={{ height: 0, opacity: 0 }}
+                transition={{ duration: 0.25, ease: smoothEase }}
+                className="overflow-hidden"
+              >
+                <div className="px-4 pb-4 md:px-6 md:pb-6 space-y-4">
+                  {/* Desktop: Flex row with filters right-aligned */}
+                  {/* Mobile: Stack vertically with labels visible */}
+                  <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-4">
+                    {/* Search Filter */}
+                    <div className="w-full md:w-auto">
+                      <label htmlFor="search-filter" className="block text-xs font-accent uppercase tracking-wider text-[var(--fg-secondary)] mb-2">
+                        Search
+                      </label>
+                      <div className="relative">
+                        <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[var(--fg-secondary)]" />
+                        <input
+                          id="search-filter"
+                          type="text"
+                          value={searchQuery}
+                          onChange={(e) => setSearchQuery(e.target.value)}
+                          placeholder="Filter resources..."
+                          className="w-full md:w-48 pl-9 pr-8 py-2 bg-[var(--bg-secondary)] border border-[var(--border-secondary)] rounded-lg text-xs sm:text-sm text-[var(--fg-primary)] placeholder:text-[var(--fg-secondary)] focus:outline-none focus:ring-1 focus:ring-[var(--border-primary)]/60 focus:border-[var(--border-primary)] transition-colors"
+                        />
+                        {searchQuery && (
+                          <button
+                            onClick={() => setSearchQuery('')}
+                            className="absolute right-2 top-1/2 -translate-y-1/2 p-1 text-[var(--fg-secondary)] hover:text-[var(--fg-primary)]"
+                          >
+                            <X className="w-3 h-3" />
+                          </button>
+                        )}
+                      </div>
+                    </div>
+
+                    {/* Filter Dropdowns - 5 columns on mobile, flex row on desktop */}
+                    <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 md:flex gap-3 md:gap-4">
+                      {/* Category Filter */}
+                      <div className="flex flex-col">
+                        <label htmlFor="category-filter" className="block text-xs font-accent uppercase tracking-wider text-[var(--fg-secondary)] mb-2">
+                          Category
+                        </label>
+                        <select
+                          id="category-filter"
+                          value={categoryFilter}
+                          onChange={(e) => handleCategoryChange(e.target.value)}
+                          className="px-2 sm:px-3 py-2 bg-[var(--bg-secondary)] border border-[var(--border-secondary)] rounded-lg text-xs sm:text-sm text-[var(--fg-primary)] focus:outline-none focus:ring-1 focus:ring-[var(--border-primary)]/60 focus:border-[var(--border-primary)] transition-colors cursor-pointer hover:border-[var(--fg-tertiary)] truncate"
+                        >
+                          <option value="all">All</option>
+                          {filterOptions.categories.map((category) => (
+                            <option key={category} value={category}>
+                              {category}
+                            </option>
+                          ))}
+                        </select>
+                      </div>
+
+                      {/* Sub-category Filter */}
+                      <div className="flex flex-col">
+                        <label htmlFor="subcategory-filter" className="block text-xs font-accent uppercase tracking-wider text-[var(--fg-secondary)] mb-2">
+                          Sub-cat
+                        </label>
+                        <select
+                          id="subcategory-filter"
+                          value={subCategorySelectValue}
+                          onChange={(e) => handleSubCategoryChange(e.target.value)}
+                          className="px-2 sm:px-3 py-2 bg-[var(--bg-secondary)] border border-[var(--border-secondary)] rounded-lg text-xs sm:text-sm text-[var(--fg-primary)] focus:outline-none focus:ring-1 focus:ring-[var(--border-primary)]/60 focus:border-[var(--border-primary)] transition-colors cursor-pointer hover:border-[var(--fg-tertiary)] truncate"
+                        >
+                          <option value="all">All</option>
+                          {availableSubCategories.map((subCategory) => (
+                            <option key={subCategory} value={subCategory}>
+                              {subCategory}
+                            </option>
+                          ))}
+                        </select>
+                      </div>
+
+                      {/* Pricing Filter */}
+                      <div className="flex flex-col">
+                        <label htmlFor="pricing-filter" className="block text-xs font-accent uppercase tracking-wider text-[var(--fg-secondary)] mb-2">
+                          Pricing
+                        </label>
+                        <select
+                          id="pricing-filter"
+                          value={pricingFilter}
+                          onChange={(e) => handlePricingChange(e.target.value)}
+                          className="px-2 sm:px-3 py-2 bg-[var(--bg-secondary)] border border-[var(--border-secondary)] rounded-lg text-xs sm:text-sm text-[var(--fg-primary)] focus:outline-none focus:ring-1 focus:ring-[var(--border-primary)]/60 focus:border-[var(--border-primary)] transition-colors cursor-pointer hover:border-[var(--fg-tertiary)] truncate"
+                        >
+                          <option value="all">All</option>
+                          {filterOptions.pricings.map((pricing) => (
+                            <option key={pricing} value={pricing}>
+                              {pricing}
+                            </option>
+                          ))}
+                        </select>
+                      </div>
+
+                      {/* Rating Filter */}
+                      <div className="flex flex-col">
+                        <label htmlFor="rating-filter" className="block text-xs font-accent uppercase tracking-wider text-[var(--fg-secondary)] mb-2">
+                          Rating
+                        </label>
+                        <select
+                          id="rating-filter"
+                          value={ratingFilter}
+                          onChange={(e) => handleRatingChange(e.target.value)}
+                          className="px-2 sm:px-3 py-2 bg-[var(--bg-secondary)] border border-[var(--border-secondary)] rounded-lg text-xs sm:text-sm text-[var(--fg-primary)] focus:outline-none focus:ring-1 focus:ring-[var(--border-primary)]/60 focus:border-[var(--border-primary)] transition-colors cursor-pointer hover:border-[var(--fg-tertiary)] truncate"
+                        >
+                          {RATING_RANGES.map((range) => (
+                            <option key={range.value} value={range.value}>
+                              {range.label}
+                            </option>
+                          ))}
+                        </select>
+                      </div>
+
+                      {/* New Filter */}
+                      <div className="flex flex-col">
+                        <label htmlFor="new-filter" className="block text-xs font-accent uppercase tracking-wider text-[var(--fg-secondary)] mb-2">
+                          Added
+                        </label>
+                        <select
+                          id="new-filter"
+                          value={newFilter}
+                          onChange={(e) => handleNewFilterChange(e.target.value)}
+                          className="px-2 sm:px-3 py-2 bg-[var(--bg-secondary)] border border-[var(--border-secondary)] rounded-lg text-xs sm:text-sm text-[var(--fg-primary)] focus:outline-none focus:ring-1 focus:ring-[var(--border-primary)]/60 focus:border-[var(--border-primary)] transition-colors cursor-pointer hover:border-[var(--fg-tertiary)] truncate"
+                        >
+                          <option value="all">All</option>
+                          <option value="new">New (Last 7 Days)</option>
+                        </select>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </motion.div>
+            )}
+          </AnimatePresence>
         </div>
-      </motion.div>
       </div>
 
       {/* Mobile Card View */}
