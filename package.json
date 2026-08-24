@@ -25,6 +25,7 @@
     "@react-three/fiber": "^8.18.0",
     "@tanstack/react-virtual": "^3.13.2",
     "@types/papaparse": "^5.3.16",
+    "@vercel/analytics": "^2.0.1",
     "@vercel/kv": "^3.0.0",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
